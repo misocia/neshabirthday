@@ -21,21 +21,20 @@
             overflow: hidden;
             font-family: var(--mc-font);
             color: white;
-            background-color: #222; /* Warna dasar agar tidak putih */
+            background-color: #222;
             image-rendering: pixelated;
         }
 
-        /* --- BACKGROUND IMPROVED --- */
+        /* --- BACKGROUND (USING YOUR bg.png) --- */
         .panorama-container {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            /* Menggunakan gambar dari sumber yang lebih stabil */
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                              url('https://i.imgur.com/8SInmS0.png'); 
+            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                              url('bg.jpg'); 
             background-size: cover;
             background-position: center;
-            filter: blur(4px);
+            filter: blur(2px);
             z-index: -1;
             animation: panoramaScroll 100s linear infinite;
         }
@@ -53,7 +52,7 @@
         }
 
         .mc-panel {
-            background: #c6c6c6; /* Klasik warna menu Minecraft */
+            background: #c6c6c6; 
             border: 4px solid #000;
             box-shadow: inset 4px 4px 0px #ffffff, inset -4px -4px 0px #555, 10px 10px 0px rgba(0,0,0,0.5);
             padding: 30px;
@@ -93,6 +92,7 @@
             width: 80%;
             margin: 20px 0;
             text-align: center;
+            outline: none;
         }
 
         .mc-btn {
@@ -118,11 +118,14 @@
             display: none;
             justify-content: center;
             align-items: center;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             z-index: 100;
         }
 
-        .creeper-img { width: 250px; }
+        .creeper-img { 
+            width: 250px; 
+            image-rendering: pixelated;
+        }
 
         .shake { animation: shake 0.1s infinite; }
         @keyframes shake {
@@ -152,24 +155,24 @@
             <span class="splash-text">Birthday Edition!</span>
             <div style="margin-top: 20px;">
                 <p style="font-size: 1.5rem;">Player Name:</p>
-                <input type="text" id="username" placeholder="Enter 'Nesha'">
+                <input type="text" id="username" placeholder="Enter 'Nesha'" autocomplete="off">
                 <button class="mc-btn" onclick="startSequence()">PLAY</button>
             </div>
         </div>
 
         <div class="mc-panel hidden" id="birthday-screen">
-            <img src="https://i.imgur.com/uS8xYfX.png" width="100">
+            <img src="cake.jpg" width="120" style="image-rendering: pixelated; margin-bottom: 10px;">
             <h1 class="mc-logo" style="color: #55ff55;">BOOM!</h1>
-            <h2 style="margin: 10px 0;">Happy Birthday, Nesha!</h2>
-            <p style="font-size: 1.2rem;">LEVEL 24 REACHED!</p>
+            <h2 style="margin: 10px 0; font-size: 2rem;">Happy Birthday, Nesha!</h2>
+            <p style="font-size: 1.4rem;">ACHIEVEMENT: SURVIVED THE CREEPER!</p>
             <button class="mc-btn" onclick="location.reload()">REPLAY</button>
         </div>
     </div>
 
     <div id="creeper-overlay">
         <div style="text-align: center;">
-            <img src="https://i.imgur.com/6U8YpB7.png" class="creeper-img" id="creeper-sprite">
-            <h1 id="hiss-text" style="color: #55ff55; font-size: 3rem; display: none;">Ssssssssss...</h1>
+            <img src="creeper.jpg" class="creeper-img" id="creeper-sprite">
+            <h1 id="hiss-text" style="color: #55ff55; font-size: 3rem; display: none; margin-top: 10px;">Ssssssssss...</h1>
         </div>
     </div>
 
@@ -179,7 +182,7 @@
         function startSequence() {
             const name = document.getElementById('username').value;
             if (name.toLowerCase() !== "nesha") {
-                alert("Only Nesha can enter!");
+                alert("Player unrecognized!");
                 return;
             }
 
@@ -190,11 +193,13 @@
             
             overlay.style.display = 'flex';
 
+            new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3').play();
+
             setTimeout(() => {
                 hissText.style.display = 'block';
                 creeperSprite.classList.add('shake');
                 new Audio('https://www.myinstants.com/media/sounds/creeper-hiss.mp3').play();
-            }, 500);
+            }, 600);
 
             setTimeout(() => {
                 new Audio('https://www.myinstants.com/media/sounds/minecraft-explosion-sound.mp3').play();
