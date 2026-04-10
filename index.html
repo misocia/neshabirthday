@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Adventure - Nesha</title>
+    <title>Minecraft Birthday Adventure - Nesha</title>
     <style>
+        /* Import Minecraft Font */
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
         :root {
@@ -21,63 +22,61 @@
             overflow: hidden;
             font-family: var(--mc-font);
             color: white;
-            /* WARNA CADANGAN: Supaya tidak putih kalau gambar gagal load */
-            background-color: #313131; 
             image-rendering: pixelated;
         }
 
-        /* --- BACKGROUND --- */
-        .panorama-container {
+        /* --- BACKGROUND INTERAKTIF: GRADASI LANGIT MALAM --- */
+        #bg-canvas {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: #313131;
-            /* Memanggil file yang sudah kamu upload di GitHub */
-            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('bg2.jpg'); 
-            background-size: cover;
-            background-position: center;
-            filter: blur(2px);
-            z-index: -1;
-            animation: panoramaScroll 100s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Biru gelap ke Ungu Gelap khas Minecraft Night */
+            background: linear-gradient(180deg, #02021c 0%, #1a0129 100%);
+            z-index: -2;
         }
 
-        @keyframes panoramaScroll {
-            from { background-position: 0% center; }
-            to { background-position: 100% center; }
-        }
-
+        /* Container untuk UI agar berada di atas canvas */
         .ui-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            position: relative;
+            z-index: 10;
         }
 
+        /* --- UI PANEL: GAYA MENU MINECRAFT --- */
         .mc-panel {
             background: #c6c6c6; 
             border: 4px solid #000;
             box-shadow: inset 4px 4px 0px #ffffff, inset -4px -4px 0px #555, 10px 10px 0px rgba(0,0,0,0.5);
             padding: 30px;
             text-align: center;
-            width: 350px;
+            width: 380px;
             color: #333;
+            transition: transform 0.2s ease;
+        }
+
+        .mc-panel:hover {
+            transform: scale(1.02);
         }
 
         .mc-logo {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             color: #fff;
-            text-shadow: 4px 4px 0px var(--mc-shadow);
+            text-shadow: 5px 5px 0px var(--mc-shadow);
             margin: 0;
+            margin-bottom: 5px;
         }
 
         .splash-text {
             color: #FFFF55;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             text-shadow: 2px 2px 0px #3F3F00;
             display: inline-block;
             transform: rotate(-15deg);
-            position: relative;
-            top: -5px;
             animation: splashPulse 0.5s ease-in-out infinite alternate;
         }
 
@@ -86,6 +85,7 @@
             to { transform: rotate(-15deg) scale(1.1); }
         }
 
+        /* --- INPUT & BUTTON STYLING --- */
         input[type="text"] {
             font-family: var(--mc-font);
             font-size: 1.5rem;
@@ -94,7 +94,7 @@
             color: #55ff55;
             padding: 8px;
             width: 85%;
-            margin: 20px 0;
+            margin: 25px 0;
             text-align: center;
             outline: none;
         }
@@ -110,12 +110,23 @@
             padding: 10px;
             width: 100%;
             cursor: pointer;
+            position: relative;
             text-shadow: 2px 2px 0px #000;
         }
 
-        .mc-btn:hover { background-color: var(--mc-green); }
+        .mc-btn:active {
+            top: 2px;
+            border-top-color: #000;
+            border-left-color: #000;
+            border-bottom-color: #dbdbdb;
+            border-right-color: #dbdbdb;
+        }
 
-        /* JUMPSCARE */
+        .mc-btn:hover {
+            background-color: var(--mc-green);
+        }
+
+        /* --- JUMPSCARE & EFFECTS --- */
         #creeper-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -146,52 +157,117 @@
             z-index: 200;
         }
 
+        /* Utility Class untuk menyembunyikan elemen */
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="panorama-container"></div>
+    <canvas id="bg-canvas"></canvas>
 
     <div class="ui-wrapper">
         <div class="mc-panel" id="login-screen">
             <h1 class="mc-logo">Minecraft</h1>
             <span class="splash-text">Birthday Edition!</span>
             <div style="margin-top: 20px;">
-                <p style="font-size: 1.5rem; margin: 0;">Player Name:</p>
+                <p style="font-size: 1.6rem; margin: 0; color: #555;">Player Name:</p>
                 <input type="text" id="username" placeholder="Enter 'Nesha'" autocomplete="off">
                 <button class="mc-btn" onclick="startSequence()">PLAY</button>
             </div>
         </div>
 
         <div class="mc-panel hidden" id="birthday-screen">
-            <img src="cake.jpg" width="100" style="margin-bottom: 10px;">
-            <h1 class="mc-logo" style="color: #55ff55;">BOOM!</h1>
-            <h2 style="margin: 10px 0; font-size: 1.8rem;">Happy Birthday, Nesha!</h2>
-            <p style="font-size: 1.3rem;">LEVEL 21 UNLOCKED!</p>
+            <img src="cake.jpg" width="120" style="image-rendering: pixelated; margin-bottom: 10px;" alt="Birthday Cake">
+            <h1 class="mc-logo" style="color: #55ff55; text-shadow: 4px 4px 0 #1e1e1e;">BOOM!</h1>
+            <h2 style="margin: 10px 0; font-size: 2rem;">Happy Birthday, Nesha!</h2>
+            <p style="font-size: 1.4rem; color: #FFFF55;">ACHIEVEMENT: SURVIVED THE CREEPER!</p>
             <button class="mc-btn" onclick="location.reload()">REPLAY</button>
         </div>
     </div>
 
     <div id="creeper-overlay">
         <div style="text-align: center;">
-            <img src="creeper.jpg" class="creeper-img" id="creeper-sprite">
-            <h1 id="hiss-text" style="color: #55ff55; font-size: 3rem; display: none; margin-top: 15px;">Ssssssssss...</h1>
+            <img src="creeper.jpg" class="creeper-img" id="creeper-sprite" alt="Creeper">
+            <h1 id="hiss-text" style="color: #55ff55; font-size: 3.5rem; display: none; margin-top: 15px; text-shadow: 3px 3px 0 #000;">Ssssssssss...</h1>
         </div>
     </div>
 
     <div id="flash"></div>
 
     <script>
+        // --- JAVASCRIPT UNTUK PARTIKEL TERBANG (VEKTOR) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Atur ukuran canvas sesuai layar
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Panggil pertama kali
+
+        // Class untuk Partikel Tunggal
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                // Ukuran pixelated (kotak)
+                this.size = Math.random() * 4 + 2; 
+                this.speedX = Math.random() * 0.5 - 0.25; // Gerak horizontal lambat
+                this.speedY = Math.random() * 1.5 + 0.5;  // Jatuh/terbang ke bawah perlahan
+                // Warna partikel (sparkle putih ke kuning terang)
+                this.color = `rgba(255, 255, ${Math.random() * 100 + 155}, ${Math.random() * 0.5 + 0.2})`;
+            }
+
+            // Perbarui posisi partikel
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+
+                // Reset jika partikel keluar dari bawah layar
+                if (this.y > canvas.height) {
+                    this.y = 0 - this.size;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            // Gambar partikel sebagai kotak pixelated
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        // Buat kumpulan partikel
+        const particlesArray = [];
+        const numberOfParticles = 80; // Jumlah partikel di layar
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            particlesArray.push(new Particle());
+        }
+
+        // Fungsi Animasi Utama
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles(); // Mulai animasi
+
+        // --- JAVASCRIPT UNTUK LOGIKA JUMPSCARE ---
         function startSequence() {
             const name = document.getElementById('username').value;
             // Validasi nama
             if (name.toLowerCase() !== "nesha") {
-                alert("Hanya Nesha yang boleh masuk!");
+                alert("Player unrecognized! Are you really Nesha?");
                 return;
             }
 
-            // Jalankan suara klik (menggunakan link umum yang jarang mati)
+            // Jalankan suara klik (menggunakan link umum)
             new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3').play();
 
             document.getElementById('login-screen').classList.add('hidden');
@@ -201,24 +277,30 @@
             
             overlay.style.display = 'flex';
 
-            // Tahap 1: Muncul Creeper + Desis
+            // Tahap 1: Muncul Creeper + Suara Desis
             setTimeout(() => {
                 hissText.style.display = 'block';
                 creeperSprite.classList.add('shake');
                 new Audio('https://www.myinstants.com/media/sounds/creeper-hiss.mp3').play();
-            }, 600);
+            }, 700);
 
-            // Tahap 2: Ledakan + Ganti Layar
+            // Tahap 2: Ledakan + Ganti Layar Birthday
             setTimeout(() => {
                 new Audio('https://www.myinstants.com/media/sounds/minecraft-explosion-sound.mp3').play();
                 document.getElementById('flash').style.display = 'block';
                 overlay.style.display = 'none';
 
+                // Partikel terbang jadi sedikit lebih cepat saat ledakan
+                for(let i=0; i<particlesArray.length; i++) {
+                    particlesArray[i].speedY = Math.random() * 5 + 2;
+                }
+
+                // Sembunyikan Flash & Munculkan ucapan
                 setTimeout(() => {
                     document.getElementById('flash').style.display = 'none';
                     document.getElementById('birthday-screen').classList.remove('hidden');
                 }, 200);
-            }, 3000);
+            }, 3200);
         }
     </script>
 </body>
