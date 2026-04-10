@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft Birthday Adventure - Nesha</title>
     <style>
-        /* Import Minecraft Font */
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
         :root {
@@ -15,29 +14,22 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
             overflow: hidden;
             font-family: var(--mc-font);
             color: white;
             image-rendering: pixelated;
         }
 
-        /* --- BACKGROUND INTERAKTIF: GRADASI LANGIT MALAM --- */
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Biru gelap ke Ungu Gelap khas Minecraft Night */
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(180deg, #02021c 0%, #1a0129 100%);
             z-index: -2;
         }
 
-        /* Container untuk UI agar berada di atas canvas */
         .ui-wrapper {
             display: flex;
             justify-content: center;
@@ -47,7 +39,7 @@
             z-index: 10;
         }
 
-        /* --- UI PANEL: GAYA MENU MINECRAFT --- */
+        /* --- PANEL UMUM --- */
         .mc-panel {
             background: #c6c6c6; 
             border: 4px solid #000;
@@ -56,49 +48,37 @@
             text-align: center;
             width: 380px;
             color: #333;
-            transition: transform 0.2s ease;
         }
 
-        .mc-panel:hover {
-            transform: scale(1.02);
+        /* --- MINECRAFT BOOK STYLE --- */
+        .mc-book {
+            background: #e6d5b8; /* Warna kertas tua */
+            border: 6px solid #3d2a1a; /* Warna cover cokelat */
+            box-shadow: 15px 15px 0px rgba(0,0,0,0.4);
+            width: 400px;
+            height: 500px;
+            padding: 40px;
+            color: #1a1a1a;
+            position: relative;
+            text-align: left;
+            overflow-y: auto;
         }
 
-        .mc-logo {
-            font-size: 3.8rem;
-            color: #fff;
-            text-shadow: 5px 5px 0px var(--mc-shadow);
-            margin: 0;
-            margin-bottom: 5px;
-        }
-
-        .splash-text {
-            color: #FFFF55;
-            font-size: 1.5rem;
-            text-shadow: 2px 2px 0px #3F3F00;
-            display: inline-block;
-            transform: rotate(-15deg);
-            animation: splashPulse 0.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes splashPulse {
-            from { transform: rotate(-15deg) scale(1); }
-            to { transform: rotate(-15deg) scale(1.1); }
-        }
-
-        /* --- INPUT & BUTTON STYLING --- */
-        input[type="text"] {
-            font-family: var(--mc-font);
-            font-size: 1.5rem;
-            background-color: #000;
-            border: 2px solid #555;
-            color: #55ff55;
-            padding: 8px;
-            width: 85%;
-            margin: 25px 0;
+        .book-title {
+            color: #a80000;
+            font-size: 2.5rem;
             text-align: center;
-            outline: none;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #3d2a1a;
         }
 
+        .book-content {
+            font-size: 1.4rem;
+            line-height: 1.2;
+            white-space: pre-wrap;
+        }
+
+        /* --- BUTTONS --- */
         .mc-btn {
             font-family: var(--mc-font);
             font-size: 1.8rem;
@@ -110,55 +90,47 @@
             padding: 10px;
             width: 100%;
             cursor: pointer;
-            position: relative;
+            margin-top: 15px;
             text-shadow: 2px 2px 0px #000;
         }
 
-        .mc-btn:active {
-            top: 2px;
-            border-top-color: #000;
-            border-left-color: #000;
-            border-bottom-color: #dbdbdb;
-            border-right-color: #dbdbdb;
+        .mc-btn:hover { background-color: var(--mc-green); }
+
+        .mc-logo {
+            font-size: 3.5rem; color: #fff;
+            text-shadow: 4px 4px 0px var(--mc-shadow);
+            margin: 0;
         }
 
-        .mc-btn:hover {
-            background-color: var(--mc-green);
+        .splash-text {
+            color: #FFFF55; font-size: 1.4rem;
+            display: inline-block; transform: rotate(-15deg);
+            animation: splashPulse 0.5s ease-in-out infinite alternate;
         }
 
-        /* --- JUMPSCARE & EFFECTS --- */
+        @keyframes splashPulse {
+            from { transform: scale(1); } to { transform: scale(1.1); }
+        }
+
+        /* --- JUMPSCARE --- */
         #creeper-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0,0,0,0.9);
-            z-index: 100;
+            display: none; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); z-index: 100;
         }
-
-        .creeper-img { 
-            width: 250px; 
-            image-rendering: pixelated;
-        }
-
         .shake { animation: shake 0.1s infinite; }
         @keyframes shake {
-            0% { transform: translate(2px, 2px); }
-            50% { transform: translate(-2px, -2px); }
-            100% { transform: translate(2px, -2px); }
+            0% { transform: translate(2px, 2px); } 100% { transform: translate(-2px, -2px); }
         }
 
         #flash {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: white;
-            display: none;
-            z-index: 200;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; display: none; z-index: 200;
         }
 
-        /* Utility Class untuk menyembunyikan elemen */
         .hidden { display: none !important; }
+        input { font-family: var(--mc-font); font-size: 1.5rem; text-align: center; width: 80%; padding: 5px; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -169,138 +141,111 @@
         <div class="mc-panel" id="login-screen">
             <h1 class="mc-logo">Minecraft</h1>
             <span class="splash-text">Birthday Edition!</span>
-            <div style="margin-top: 20px;">
-                <p style="font-size: 1.6rem; margin: 0; color: #555;">Player Name:</p>
-                <input type="text" id="username" placeholder="Enter 'Nesha'" autocomplete="off">
-                <button class="mc-btn" onclick="startSequence()">PLAY</button>
-            </div>
+            <input type="text" id="username" placeholder="Enter 'Nesha'" autocomplete="off">
+            <button class="mc-btn" onclick="startSequence()">PLAY</button>
         </div>
 
         <div class="mc-panel hidden" id="birthday-screen">
-            <img src="cake.jpg" width="120" style="image-rendering: pixelated; margin-bottom: 10px;" alt="Birthday Cake">
-            <h1 class="mc-logo" style="color: #55ff55; text-shadow: 4px 4px 0 #1e1e1e;">BOOM!</h1>
-            <h2 style="margin: 10px 0; font-size: 2rem;">Happy Birthday, Nesha!</h2>
-            <p style="font-size: 1.4rem; color: #FFFF55;">ACHIEVEMENT: SURVIVED THE CREEPER!</p>
-            <button class="mc-btn" onclick="location.reload()">REPLAY</button>
+            <img src="cake.jpg" width="100" style="margin-bottom: 10px;">
+            <h1 class="mc-logo" style="color: #55ff55;">BOOM!</h1>
+            <h2 style="margin: 5px 0;">Happy Birthday, Nesha!</h2>
+            <button class="mc-btn" onclick="showLetter()">READ NEXT</button>
+        </div>
+
+        <div class="mc-book hidden" id="letter-screen">
+            <div class="book-title">A Special Page</div>
+            <div class="book-content">
+Dear Nesha,
+
+In this infinite world of blocks and adventures, I'm so grateful that I found a friend like you. 
+
+Thank you for being born into this world. Having you as my best friend is like finding a rare diamond after a long time of mining in the dark. You make everything brighter and more fun!
+
+I promise to be here for you through every survival mode and every creative build in our lives. Thank you for being you.
+
+Happy Birthday, Bestie! 
+Stay awesome!
+
+- From your friend</div>
+            <button class="mc-btn" style="margin-top: 30px;" onclick="location.reload()">CLOSE BOOK</button>
         </div>
     </div>
 
     <div id="creeper-overlay">
         <div style="text-align: center;">
-            <img src="creeper.jpg" class="creeper-img" id="creeper-sprite" alt="Creeper">
-            <h1 id="hiss-text" style="color: #55ff55; font-size: 3.5rem; display: none; margin-top: 15px; text-shadow: 3px 3px 0 #000;">Ssssssssss...</h1>
+            <img src="creeper.jpg" class="creeper-img" id="creeper-sprite" width="200">
+            <h1 id="hiss-text" style="color: #55ff55; font-size: 3rem; display: none;">Ssssssssss...</h1>
         </div>
     </div>
 
     <div id="flash"></div>
 
     <script>
-        // --- JAVASCRIPT UNTUK PARTIKEL TERBANG (VEKTOR) ---
+        // Particle Background
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        // Atur ukuran canvas sesuai layar
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas(); // Panggil pertama kali
-
-        // Class untuk Partikel Tunggal
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                // Ukuran pixelated (kotak)
-                this.size = Math.random() * 4 + 2; 
-                this.speedX = Math.random() * 0.5 - 0.25; // Gerak horizontal lambat
-                this.speedY = Math.random() * 1.5 + 0.5;  // Jatuh/terbang ke bawah perlahan
-                // Warna partikel (sparkle putih ke kuning terang)
-                this.color = `rgba(255, 255, ${Math.random() * 100 + 155}, ${Math.random() * 0.5 + 0.2})`;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = Math.random() * 1 + 0.5;
             }
-
-            // Perbarui posisi partikel
             update() {
                 this.y += this.speedY;
-                this.x += this.speedX;
-
-                // Reset jika partikel keluar dari bawah layar
-                if (this.y > canvas.height) {
-                    this.y = 0 - this.size;
-                    this.x = Math.random() * canvas.width;
-                }
+                if (this.y > canvas.height) this.y = 0;
             }
-
-            // Gambar partikel sebagai kotak pixelated
             draw() {
-                ctx.fillStyle = this.color;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
                 ctx.fillRect(this.x, this.y, this.size, this.size);
             }
         }
 
-        // Buat kumpulan partikel
-        const particlesArray = [];
-        const numberOfParticles = 80; // Jumlah partikel di layar
+        const particles = [];
+        for (let i = 0; i < 50; i++) particles.push(new Particle());
 
-        for (let i = 0; i < numberOfParticles; i++) {
-            particlesArray.push(new Particle());
-        }
-
-        // Fungsi Animasi Utama
-        function animateParticles() {
+        function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-            }
-            requestAnimationFrame(animateParticles);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
         }
-        animateParticles(); // Mulai animasi
+        animate();
 
-        // --- JAVASCRIPT UNTUK LOGIKA JUMPSCARE ---
+        // Logic
         function startSequence() {
             const name = document.getElementById('username').value;
-            // Validasi nama
-            if (name.toLowerCase() !== "nesha") {
-                alert("Player unrecognized! Are you really Nesha?");
-                return;
-            }
+            if (name.toLowerCase() !== "nesha") { alert("Only Nesha can enter!"); return; }
 
-            // Jalankan suara klik (menggunakan link umum)
             new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3').play();
-
             document.getElementById('login-screen').classList.add('hidden');
             const overlay = document.getElementById('creeper-overlay');
-            const hissText = document.getElementById('hiss-text');
-            const creeperSprite = document.getElementById('creeper-sprite');
-            
             overlay.style.display = 'flex';
 
-            // Tahap 1: Muncul Creeper + Suara Desis
             setTimeout(() => {
-                hissText.style.display = 'block';
-                creeperSprite.classList.add('shake');
+                document.getElementById('hiss-text').style.display = 'block';
+                document.getElementById('creeper-sprite').classList.add('shake');
                 new Audio('https://www.myinstants.com/media/sounds/creeper-hiss.mp3').play();
-            }, 700);
+            }, 600);
 
-            // Tahap 2: Ledakan + Ganti Layar Birthday
             setTimeout(() => {
                 new Audio('https://www.myinstants.com/media/sounds/minecraft-explosion-sound.mp3').play();
                 document.getElementById('flash').style.display = 'block';
                 overlay.style.display = 'none';
 
-                // Partikel terbang jadi sedikit lebih cepat saat ledakan
-                for(let i=0; i<particlesArray.length; i++) {
-                    particlesArray[i].speedY = Math.random() * 5 + 2;
-                }
-
-                // Sembunyikan Flash & Munculkan ucapan
                 setTimeout(() => {
                     document.getElementById('flash').style.display = 'none';
                     document.getElementById('birthday-screen').classList.remove('hidden');
                 }, 200);
-            }, 3200);
+            }, 3000);
+        }
+
+        function showLetter() {
+            new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3').play();
+            document.getElementById('birthday-screen').classList.add('hidden');
+            document.getElementById('letter-screen').classList.remove('hidden');
         }
     </script>
 </body>
