@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Surprise - Nesha</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        body {
+            margin: 0;
+            background-color: #1e1e1e;
+            background-image: url('https://www.transparenttextures.com/patterns/pixel-weave.png');
+            font-family: 'VT323', monospace;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border: 4px solid #373737;
+            text-align: center;
+            width: 350px;
+            z-index: 10;
+        }
+
+        /* Login Styling */
+        input {
+            background: #000;
+            border: 2px solid #555;
+            color: #55ff55;
+            padding: 10px;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            width: 80%;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .btn {
+            background-color: #8b8b8b;
+            border: 4px solid #000;
+            border-top-color: #dbdbdb;
+            border-left-color: #dbdbdb;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn:hover { background-color: #3c8d2d; }
+
+        /* Creeper & Explosion */
+        #creeper-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .creeper-img {
+            width: 200px;
+            image-rendering: pixelated;
+        }
+
+        /* Shake Animation */
+        .shake {
+            animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both infinite;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+            40%, 60% { transform: translate3d(8px, 0, 0); }
+        }
+
+        /* White Flash for Explosion */
+        #flash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            display: none;
+            z-index: 200;
+        }
+
+        .hidden { display: none; }
+        .highlight { color: #55ff55; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="login-screen">
+        <h2 style="color: #AAAAAA;">MINECRAFT LOGIN</h2>
+        <p>Enter Username:</p>
+        <input type="text" id="username" placeholder="Username..." autocomplete="off">
+        <button class="btn" onclick="startSequence()">LOGIN</button>
+    </div>
+
+    <div id="creeper-overlay">
+        <div id="creeper-container">
+            <img src="https://minecraft.wiki/images/Creeper_JE2_BE2.png" class="creeper-img" id="creeper-sprite">
+            <h1 id="hiss-text" style="color: #55ff55; display: none;">Ssssssssss...</h1>
+        </div>
+    </div>
+
+    <div id="flash"></div>
+
+    <div class="container hidden" id="birthday-screen">
+        <img src="https://minecraft.wiki/images/Cake_JE4_BE2.png" width="100">
+        <h1 style="font-size: 3rem;">BOOM! 💥</h1>
+        <h2 class="highlight">HAPPY BIRTHDAY, NESHA!</h2>
+        <p style="font-size: 1.5rem;">"You survived the explosion! Time to celebrate!"</p>
+        <button class="btn" onclick="location.reload()">REPLAY</button>
+    </div>
+
+    <script>
+        function startSequence() {
+            const name = document.getElementById('username').value;
+            if (name.toLowerCase() !== "nesha") {
+                alert("Access Denied! Only Nesha can enter.");
+                return;
+            }
+
+            // Hide login
+            document.getElementById('login-screen').classList.add('hidden');
+            
+            // Show Creeper
+            const overlay = document.getElementById('creeper-overlay');
+            const hissText = document.getElementById('hiss-text');
+            const creeperSprite = document.getElementById('creeper-sprite');
+            overlay.style.display = 'flex';
+
+            // Phase 1: Hissing and Shaking
+            setTimeout(() => {
+                hissText.style.display = 'block';
+                creeperSprite.classList.add('shake');
+                
+                // Play Hiss sound (Generic Minecraft Hiss URL)
+                const hissSound = new Audio('https://www.myinstants.com/media/sounds/creeper-hiss.mp3');
+                hissSound.play();
+            }, 1000);
+
+            // Phase 2: Explosion (Flash and Birthday Message)
+            setTimeout(() => {
+                const explodeSound = new Audio('https://www.myinstants.com/media/sounds/minecraft-explosion-sound.mp3');
+                explodeSound.play();
+
+                document.getElementById('flash').style.display = 'block';
+                overlay.style.display = 'none';
+
+                setTimeout(() => {
+                    document.getElementById('flash').style.fadeOut;
+                    document.getElementById('flash').style.display = 'none';
+                    document.getElementById('birthday-screen').classList.remove('hidden');
+                }, 200);
+
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
